@@ -1,13 +1,11 @@
-# TODO:
-# - update to 3.1.1 (there is also _separate_ ipv6 version...)
 Summary:	The RIPE version of the whois client program
 Summary(pl):	Program do odpytywania bazy whois (stworzony przez RIPE)
 Name:		ripe-whois
-Version:	2.4
-Release:	4
+Version:	3.1.1v6
+Release:	1
 License:	distributable
 Group:		Applications/Networking
-Source0:	ftp://ftp.ripe.net/tools/%{name}-tools-%{version}.tar.gz
+Source0:	ftp://ftp.ripe.net/tools/%{name}-%{version}.tar.gz
 # Source0-md5:	e6bf6cd019b2fd6e49409850b92c34ad
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -43,27 +41,24 @@ przez serwery whois inne ni¿ RIPE. Aby odpytaæ inne serwery whois, nie
 u¿ywaj ¿adnej z dodatkowych flag.
 
 %prep
-%setup -q -c %{name} -n %{name}
+%setup -q -n whois-%{version}
 
 %build
-%{__cc} %{rpmcflags} %{rpmldflags} -ansi -pedantic -DRIPE -DGLIBC whois.c -o whois
-%{__cc} %{rpmcflags} %{rpmldflags} -ansi -pedantic -DRIPE -DGLIBC -DNETWORKUPDATE -lcrypt whois.c -o networkupdate
-%{__cc} %{rpmcflags} %{rpmldflags} -ansi -pedantic -DRIPE -DGLIBC -lcrypt cryptpw.c -o cryptpw
+%configure 
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_bindir}
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man1}
 
-install whois $RPM_BUILD_ROOT%{_bindir}/ripe-whois
-install networkupdate $RPM_BUILD_ROOT%{_bindir}/networkupdate
-install cryptpw $RPM_BUILD_ROOT%{_bindir}/cryptpw
+install whois3 $RPM_BUILD_ROOT%{_bindir}/whois3
+install whois3.1 $RPM_BUILD_ROOT%{_mandir}/man1/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README
-%attr(755,root,root) %{_bindir}/ripe-whois
-%attr(755,root,root) %{_bindir}/networkupdate
-%attr(755,root,root) %{_bindir}/cryptpw
+%doc README ChangeLog FLAGS.txt HELP.txt
+%attr(755,root,root) %{_bindir}/whois3
+%{_mandir}/man1/*
